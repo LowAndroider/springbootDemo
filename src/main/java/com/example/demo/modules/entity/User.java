@@ -33,5 +33,5 @@ public class User {
     @Column
     @Getter
     @Setter
-    private Set<String> permissions;
+    private String permissions;
 }
