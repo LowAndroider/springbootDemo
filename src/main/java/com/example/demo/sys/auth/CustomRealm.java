@@ -29,14 +29,14 @@ public class CustomRealm extends AuthorizingRealm {
     @Autowired
     private IUserService userService;
 
-    private static String toMd5(String src, String salt) {
-        return new Md5Hash(src,salt).toString();
+    public static String toMd5(String src) {
+        return new Md5Hash(src,"Joke").toString();
     }
 
     private Map<String,String> userMap = new HashMap<>();
 
     {
-        userMap.put("Joke",toMd5("123123","Joke"));
+        userMap.put("Joke",toMd5("123123"));
         setName("customRealm");
     }
 

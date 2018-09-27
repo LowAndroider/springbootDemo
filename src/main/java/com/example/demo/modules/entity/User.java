@@ -14,24 +14,40 @@ import java.util.Set;
 public class User {
 
     @Id
+    @Column(length = 32)
     @GeneratedValue(generator = "user_uuid")
     @GenericGenerator(strategy = "uuid.hex",name="user_uuid")
     @Getter
     @Setter
     private String id;
 
-    @Column
+    @Column(length = 40,unique = true)
     @Getter
     @Setter
     private String name;
 
-    @Column
+    @Column(length = 32)
     @Getter
     @Setter
     private String password;
 
-    @Column
+    @Column(length = 200)
     @Getter
     @Setter
     private String permissions;
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if(obj instanceof User) {
+            if(!((User) obj).id.equals(this.id))
+                return false;
+
+            return ((User) obj).name.equals(this.name);
+
+        } else {
+            return false;
+        }
+
+    }
 }
