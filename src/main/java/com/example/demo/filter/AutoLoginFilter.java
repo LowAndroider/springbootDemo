@@ -9,8 +9,10 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.Subject;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class AutoLoginFilter implements Filter {
 
     /**
@@ -28,7 +31,7 @@ public class AutoLoginFilter implements Filter {
 
     public AutoLoginFilter() {
         patterns.add(Pattern.compile("login.html"));
-        patterns.add(Pattern.compile("sublogin"));
+        patterns.add(Pattern.compile("^/test"));
     }
 
     private IUserService userService;

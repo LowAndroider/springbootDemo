@@ -1,6 +1,7 @@
 package com.example.demo.config;
 
 import com.example.demo.cache.RedisCacheManager;
+import com.example.demo.filter.AutoLoginFilter;
 import com.example.demo.session.RedisSessionDao;
 import com.example.demo.sys.auth.CustomRealm;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
@@ -14,6 +15,7 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,11 +31,15 @@ public class ShiroConfig {
     }
 
     @Bean("shiroFilter")
-    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, RedisCacheManager redisCacheManager) {
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, AutoLoginFilter autoLoginFilter) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
         Map<String,String> filterDefinitions = new LinkedHashMap<>();
+        Map<String, Filter> filterMap = shiroFilter.getFilters();
+        filterMap.put("isLogin",autoLoginFilter);
+
         filterDefinitions.put("/test*","anon");
+        filterDefinitions.put("/login.html","anon");
         filterDefinitions.put("/*","authc");
 
         shiroFilter.setFilterChainDefinitionMap(filterDefinitions);
