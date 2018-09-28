@@ -55,7 +55,7 @@ public class TestController {
     @PostMapping(params = "login")
     public R login(User user) {
         Subject subject = SecurityUtils.getSubject();
-        String tokenStr = "";
+        String tokenStr;
         UsernamePasswordToken token = new UsernamePasswordToken(user.getName(),user.getPassword());
         token.setRememberMe(true);
 

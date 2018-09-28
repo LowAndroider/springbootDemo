@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import com.example.demo.cache.RedisCacheManager;
+import com.example.demo.session.RedisSessionDao;
 import com.example.demo.sys.auth.CustomRealm;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -19,13 +21,15 @@ import java.util.Map;
 public class ShiroConfig {
 
     @Bean
-    public SessionManager sessionManager() {
+    public SessionManager sessionManager(RedisSessionDao redisSessionDao,RedisCacheManager redisCacheManager) {
         DefaultSessionManager sessionManager = new DefaultSessionManager();
+        sessionManager.setCacheManager(redisCacheManager);
+        sessionManager.setSessionDAO(redisSessionDao);
         return sessionManager;
     }
 
     @Bean("shiroFilter")
-    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, RedisCacheManager redisCacheManager) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
         Map<String,String> filterDefinitions = new LinkedHashMap<>();
@@ -52,6 +56,7 @@ public class ShiroConfig {
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
         credentialsMatcher.setHashAlgorithmName("md5");
         credentialsMatcher.setHashIterations(1);
+        credentialsMatcher.setStoredCredentialsHexEncoded(true);
         return credentialsMatcher;
     }
 
