@@ -4,7 +4,6 @@ package com.example.demo.sys.auth;
 
 import com.example.demo.modules.entity.User;
 import com.example.demo.modules.service.IUserService;
-import com.example.demo.modules.service.impl.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -70,11 +69,11 @@ public class CustomRealm extends AuthorizingRealm {
         // 获得用户名
         String userName = (String) token.getPrincipal();
         User user = userService.getUserByUserName(userName);
-        if(user != null ) {
-
+        if(user == null ) {
+            return null;
         }
 
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName,"" ,"customRealm");
+        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userName, user.getPassword(),"customRealm");
         authenticationInfo.setCredentialsSalt(ByteSource.Util.bytes("Joke"));
 
         return authenticationInfo;
@@ -84,5 +83,3 @@ public class CustomRealm extends AuthorizingRealm {
         return userMap.get(userName);
     }
 }
-
-;

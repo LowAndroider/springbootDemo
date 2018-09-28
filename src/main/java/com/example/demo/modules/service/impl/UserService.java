@@ -34,7 +34,7 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserByUserName(String username) {
-        return null;
+        return userDao.findUserByName(username);
     }
 
     @Override
