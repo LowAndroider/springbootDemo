@@ -15,4 +15,13 @@ public interface IUserService {
     User getUserByUserName(String username);
 
     User check();
+
+    String getSessionId(String username);
+
+    String getUserNameByToken(String token);
+
+    /**
+     * 删除token
+     */
+    void delToken(String username);
 }

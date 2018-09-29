@@ -3,11 +3,16 @@ package com.example.demo.modules.service.impl;
 import com.example.demo.modules.dao.UserDao;
 import com.example.demo.modules.entity.User;
 import com.example.demo.modules.service.IUserService;
+import com.example.demo.util.JedisUtil;
+import com.example.demo.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService implements IUserService {
+
+    @Autowired
+    private JedisUtil jedisUtil;
 
     @Autowired
     private UserDao userDao;
@@ -40,5 +45,27 @@ public class UserService implements IUserService {
     @Override
     public User check() {
         return null;
+    }
+
+    @Override
+    public String getSessionId(String username) {
+        jedisUtil.keys(toString());
+        return StringUtil.value(jedisUtil.get(toKey(username)));
+    }
+
+    @Override
+    public String getUserNameByToken(String token) {
+        return StringUtil.value(jedisUtil.get(toKey(token)));
+    }
+
+    @Override
+    public void delToken(String username) {
+        String tokenKey = (String) jedisUtil.get(toKey(username));
+        jedisUtil.del(toKey(username));
+        jedisUtil.del(toKey(tokenKey));
+    }
+
+    private String toKey(String key) {
+        return StringUtil.getTokenKey(key);
     }
 }

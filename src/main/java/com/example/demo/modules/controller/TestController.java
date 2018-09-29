@@ -4,6 +4,8 @@ import com.example.demo.common.R;
 import com.example.demo.modules.entity.User;
 import com.example.demo.modules.service.IUserService;
 import com.example.demo.sys.auth.CustomRealm;
+import com.example.demo.util.JedisUtil;
+import com.example.demo.util.StringUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -20,6 +22,9 @@ public class TestController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private JedisUtil jedisUtil;
 
     @PostMapping(params = "addUser")
     public R addUser(User user) {
@@ -61,7 +66,13 @@ public class TestController {
 
         try {
             subject.login(token);
+
+            //清除之前的token数据
+            userService.delToken(user.getName());
+
             tokenStr = subject.getSession().getId().toString();
+            jedisUtil.set(StringUtil.getTokenKey(user.getName()),tokenStr,31536000);
+            jedisUtil.set(StringUtil.getTokenKey(tokenStr),user.getName(),31536000);
         } catch (AuthenticationException e) {
             return R.error(e.getMessage());
         }

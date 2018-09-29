@@ -1,82 +1,83 @@
 package com.example.demo.filter;
 
+import com.example.demo.common.R;
 import com.example.demo.modules.entity.User;
 import com.example.demo.modules.service.IUserService;
 import com.example.demo.modules.service.impl.UserService;
 import com.example.demo.util.SpringContextUtil;
+import com.google.gson.Gson;
+import io.netty.util.internal.StringUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.subject.Subject;
-import org.springframework.stereotype.Component;
+import org.apache.shiro.web.filter.AccessControlFilter;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
-public class AutoLoginFilter implements Filter {
+public class AutoLoginFilter extends AccessControlFilter {
+
 
     /**
      * 封装，不需要过滤的list列表
      */
-    protected static List<Pattern> patterns = new ArrayList<>();
+    private static List<Pattern> patterns = new ArrayList<>();
 
     public AutoLoginFilter() {
         patterns.add(Pattern.compile("login.html"));
         patterns.add(Pattern.compile("^/test"));
     }
 
-    private IUserService userService;
-
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-    }
-
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
-        HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-        userService = (IUserService) SpringContextUtil.getBean(UserService.class);
+        String tokenParam = httpRequest.getParameter("token");
+        if(StringUtil.isNullOrEmpty(tokenParam)) {
+            return false;
+        }
+
+        IUserService userService = (IUserService) SpringContextUtil.getBean(UserService.class);
         String url = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         if (url.startsWith("/") && url.length() > 1) {
             url = url.substring(1);
         }
-        Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
+
+        //改为无状态
+//        Subject subject = SecurityUtils.getSubject();
+//        Session session = subject.getSession();
 
 
         if (!isInclude(url)){
-            if(!subject.isAuthenticated() && subject.isRemembered()) {
-                String username = (String) subject.getPrincipal();
-                User user = userService.getUserByUserName(username);
-                UsernamePasswordToken token = new UsernamePasswordToken(username,user.getPassword(),true);
-                subject.login(token);
-                if(session != null) {
-                    ((SimpleSession)subject.getSession()).setId(session.getId());
-                }
-            }
+
+
+            String username = userService.getUserNameByToken(tokenParam);
+            return username != null;
         }
 
-        try {
-            filterChain.doFilter(httpRequest, httpResponse);
-        } catch (Exception e) {
-            httpResponse.sendRedirect("/login.html");
-        }
+        return false;
     }
 
     @Override
-    public void destroy() {
+    protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
+        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+//        httpServletResponse.sendRedirect("/login.html");
+        httpServletResponse.setCharacterEncoding("UTF-8");
+        httpServletResponse.setHeader("Content-type","text/html;charset=UTF-8");
+        PrintWriter printWriter = httpServletResponse.getWriter();
+        Gson gson = new Gson();
+        printWriter.print(gson.toJson(R.error("缺少token或token错误")));
 
+        return false;
     }
-
     /**
      * 是否需要过滤
      * @param url

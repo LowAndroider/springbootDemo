@@ -31,16 +31,17 @@ public class ShiroConfig {
     }
 
     @Bean("shiroFilter")
-    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, AutoLoginFilter autoLoginFilter) {
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setSecurityManager(securityManager);
         Map<String,String> filterDefinitions = new LinkedHashMap<>();
         Map<String, Filter> filterMap = shiroFilter.getFilters();
-        filterMap.put("isLogin",autoLoginFilter);
+        filterMap.put("login",autoLoginFilter());
+        shiroFilter.setFilters(filterMap);
 
-        filterDefinitions.put("/test*","anon");
+        filterDefinitions.put("/test**","anon");
         filterDefinitions.put("/login.html","anon");
-        filterDefinitions.put("/*","authc");
+        filterDefinitions.put("/*","login");
 
         shiroFilter.setFilterChainDefinitionMap(filterDefinitions);
 
@@ -55,6 +56,10 @@ public class ShiroConfig {
         customRealm.setCredentialsMatcher(credentialsMatcher);
 
         return securityManager;
+    }
+
+    public AutoLoginFilter autoLoginFilter(){
+        return new AutoLoginFilter();
     }
 
     @Bean("credentialsMather")
