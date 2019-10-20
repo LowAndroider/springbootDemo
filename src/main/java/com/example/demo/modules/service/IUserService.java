@@ -1,8 +1,13 @@
 package com.example.demo.modules.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.example.demo.modules.entity.User;
 
+import java.util.List;
+
 public interface IUserService {
+
+    List<User> list(Wrapper<User> condition);
 
     User insert(User user);
 

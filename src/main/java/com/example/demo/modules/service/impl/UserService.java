@@ -1,12 +1,18 @@
 package com.example.demo.modules.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.example.demo.modules.dao.UserDao;
+import com.example.demo.modules.dao.UserMapper;
 import com.example.demo.modules.entity.User;
 import com.example.demo.modules.service.IUserService;
 import com.example.demo.util.JedisUtil;
 import com.example.demo.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class UserService implements IUserService {
@@ -17,7 +23,16 @@ public class UserService implements IUserService {
     @Autowired
     private UserDao userDao;
 
+    @Resource
+    private UserMapper mapper;
+
     @Override
+    public List<User> list(Wrapper<User> condition) {
+        return mapper.selectList(condition);
+    }
+
+    @Override
+    @Transactional("masterTransactionManager")
     public User insert(User user) {
         return userDao.save(user);
     }

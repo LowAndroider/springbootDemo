@@ -10,6 +10,10 @@ import javax.persistence.Table;
 @Table(name = "t_user")
 public interface UserDao extends JpaRepository<User, String> {
 
+    /**
+     * @param id
+     * @return
+     */
     User findUserById(String id);
 
     User findUserByName(String name);

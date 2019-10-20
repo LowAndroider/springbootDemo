@@ -3,10 +3,6 @@
 # hibernate 数据库配置
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3307/demo?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: root
-    password: root
-    driver-class-name: com.mysql.jdbc.Driver
     platform: mysql
     type: com.alibaba.druid.pool.DruidDataSource
       # 初始化大小 最小 最大
@@ -54,9 +50,10 @@ spring:
     active: dev
 logging:
   config: classpath:logback-spring.xml
-mybatis:
+mybatis-plus:
   type-aliases-package: com.example.demo.modules.entity
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath:com.example.demo.modules.dao.mapping/*.xml
+
 server:
   servlet:
     context-path: /demo
