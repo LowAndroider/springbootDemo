@@ -9,11 +9,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 
-@Configuration
-// 单数据源注解中可以不写后面的两个参数
+/**
+ * MapperScan注解单数据源注解中可以不写后面的两个参数
+ */
+@Repository
 @MapperScan(basePackages = "com.example.demo.modules.dao", sqlSessionTemplateRef = "masterSqlSessionTemplate", sqlSessionFactoryRef = "masterSqlSessionFactory")
 public class DataSourceConfig {
 
