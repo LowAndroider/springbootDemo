@@ -1,9 +1,19 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
-    username: root
-    password: root
+    dynamic:
+      primary: master
+      datasource:
+        master:
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+          username: root
+          password: root
+        slave:
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3307/demo?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+          username: root
+          password: root
+
 
 
   devtools:
@@ -14,3 +24,6 @@ spring:
       additional-paths: src/main/java
       #classpath目录下的WEB-INF文件夹内容修改不重启
       exclude: WEB-INF/**
+  flyway:
+    out-of-order: true
+    baseline-on-migrate: true

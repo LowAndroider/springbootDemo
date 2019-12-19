@@ -1,8 +1,7 @@
 package com.example.demo.modules.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.example.demo.modules.dao.UserDao;
-import com.example.demo.modules.dao.UserMapper;
+import com.example.demo.modules.dao.master.UserMapper;
 import com.example.demo.modules.entity.User;
 import com.example.demo.modules.service.IUserService;
 import com.example.demo.util.JedisUtil;
@@ -20,9 +19,6 @@ public class UserService implements IUserService {
     @Autowired
     private JedisUtil jedisUtil;
 
-    @Autowired
-    private UserDao userDao;
-
     @Resource
     private UserMapper mapper;
 
@@ -34,7 +30,7 @@ public class UserService implements IUserService {
     @Override
     @Transactional("masterTransactionManager")
     public User insert(User user) {
-        return userDao.save(user);
+        return null;
     }
 
     @Override
@@ -49,12 +45,12 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserById(String id) {
-        return userDao.findUserById(id);
+        return null;
     }
 
     @Override
     public User getUserByUserName(String username) {
-        return userDao.findUserByName(username);
+        return null;
     }
 
     @Override

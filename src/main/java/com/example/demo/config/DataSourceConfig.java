@@ -1,48 +1,41 @@
 package com.example.demo.config;
 
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
 /**
- * MapperScan注解单数据源注解中可以不写后面的两个参数
+ * @author Djh
  */
-@Repository
-@MapperScan(basePackages = "com.example.demo.modules.dao", sqlSessionTemplateRef = "masterSqlSessionTemplate", sqlSessionFactoryRef = "masterSqlSessionFactory")
+@Component
 public class DataSourceConfig {
 
-    @Bean("dataSource")
-    @ConfigurationProperties("spring.datasource")
-    public DataSource dataSource() {
+    @Bean("slaveDataSource")
+    @ConfigurationProperties("spring.datasource.slave")
+    public DataSource slaveDataSource() {
         return DruidDataSourceBuilder.create().build();
-    }
-
-    @Bean("masterSqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(dataSource);
-        return sqlSessionFactoryBean.getObject();
-    }
-
-    @Bean("masterSqlSessionTemplate")
-    public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
-        return new SqlSessionTemplate(sqlSessionFactory);
     }
 
     /**
      * 事务管理，用于@Transactional注解的参数
      */
+    @Bean("slaveTransactionManager")
+    public DataSourceTransactionManager slaveTransactionManager(DataSource slaveDataSource) {
+        return new DataSourceTransactionManager(slaveDataSource);
+    }
+
+    @Bean("masterDataSource")
+    @ConfigurationProperties("spring.datasource.master")
+    public DataSource masterDataSource() {
+        return DruidDataSourceBuilder.create().build();
+    }
+
     @Bean("masterTransactionManager")
-    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+    public DataSourceTransactionManager masterTransactionManager(DataSource masterDataSource) {
+        return new DataSourceTransactionManager(masterDataSource);
     }
 }

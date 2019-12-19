@@ -53,11 +53,10 @@ logging:
 mybatis-plus:
 # resultType中不写包名即默认为是这个包下的类
   type-aliases-package: com.example.demo.modules.entity
-#  mapper-locations: classpath:com.example.demo.modules.dao.mapping/*.xml
+  mapper-locations: classpath:com.example.demo.modules.dao.master.mapping/*.xml, classpath:com.example.demo.modules.dao.slave.mapping/*.xml
+
 
 server:
   servlet:
     context-path: /demo
   port: 8090
-
-

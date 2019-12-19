@@ -67,7 +67,7 @@
     </appender>
 
     <springProfile name="dev,test">
-        <root level="TRACE">
+        <root level="DEBUG">
             <appender-ref ref="consoleLog"/>
         </root>
     </springProfile>
