@@ -1,4 +1,4 @@
-CREATE TABLE IF EXISTS users (
+CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(32) PRIMARY KEY,
     username VARCHAR(32),
     phone VARCHAR(14),

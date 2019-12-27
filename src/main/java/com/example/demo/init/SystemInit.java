@@ -1,7 +1,7 @@
 package com.example.demo.init;
 
+import com.example.demo.util.DataSourceUtil;
 import com.example.demo.util.SpringContextUtil;
-import org.apache.ibatis.jdbc.ScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
@@ -72,6 +72,7 @@ public class SystemInit {
                 updateVersion(lastVersion);
             } catch (SQLException e) {
                 logger.error("数据库初始化异常！");
+                e.printStackTrace();
                 rollBack();
                 throw new RuntimeException("数据库初始化异常");
             } catch (IOException e) {
@@ -85,7 +86,11 @@ public class SystemInit {
     }
 
     private void updateVersion(String version) throws SQLException {
-        Statement statement = connectionMap.get(SystemInit.VERSION_TABLE_DATABASE).createStatement();
+        Connection connection = connectionMap.get(SystemInit.VERSION_TABLE_DATABASE);
+        String databaseName = DataSourceUtil.getDataBaseName(connection);
+        Statement statement = connection.createStatement();
+
+        statement.execute("USE " + databaseName);
         statement.execute("UPDATE data_version SET version = '" + version + "'");
     }
 
@@ -139,7 +144,7 @@ public class SystemInit {
 
         String line;
         while ((line = lineReader.readLine()) != null) {
-            script.append(line + "\n");
+            script.append(line).append("\n");
         }
 
         return script.toString();
