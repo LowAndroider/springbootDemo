@@ -1,7 +1,7 @@
 package com.example.demo.modules.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.example.demo.modules.dao.UserDao;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.modules.dao.UserMapper;
 import com.example.demo.modules.entity.User;
 import com.example.demo.modules.service.IUserService;
@@ -9,7 +9,6 @@ import com.example.demo.util.JedisUtil;
 import com.example.demo.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,9 +19,6 @@ public class UserService implements IUserService {
     @Autowired
     private JedisUtil jedisUtil;
 
-    @Autowired
-    private UserDao userDao;
-
     @Resource
     private UserMapper mapper;
 
@@ -32,9 +28,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @Transactional("masterTransactionManager")
-    public User insert(User user) {
-        return userDao.save(user);
+    public int insert(User user) {
+        return mapper.insert(user);
     }
 
     @Override
@@ -49,12 +44,15 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserById(String id) {
-        return userDao.findUserById(id);
+        return mapper.selectById(id);
     }
 
     @Override
     public User getUserByUserName(String username) {
-        return userDao.findUserByName(username);
+        User user = new User();
+        user.setName(username);
+        Wrapper<User> wrapper = new QueryWrapper<>(user);
+        return mapper.selectOne(wrapper);
     }
 
     @Override

@@ -9,7 +9,7 @@ public interface IUserService {
 
     List<User> list(Wrapper<User> condition);
 
-    User insert(User user);
+    int insert(User user);
 
     User del();
 

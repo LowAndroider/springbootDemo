@@ -42,12 +42,8 @@ public class TestController {
         String pwd = user.getPassword();
         user.setPassword(CustomRealm.toMd5(pwd));
         try {
-            User result = userService.insert(user);
-            if (result.equals(user)) {
-                return R.ok(user);
-            } else {
-                return R.error();
-            }
+            int result = userService.insert(user);
+            return R.ok(user);
         } catch (DataIntegrityViolationException e) {
             return R.error("用户名已存在");
         }

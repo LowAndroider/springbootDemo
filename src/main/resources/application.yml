@@ -52,11 +52,12 @@ logging:
   config: classpath:logback-spring.xml
 mybatis-plus:
   type-aliases-package: com.example.demo.modules.entity
-  mapper-locations: classpath:com.example.demo.modules.dao.mapping/*.xml
+  mapper-locations: com.example.demo.modules.dao.mapping/*.xml
 
 server:
   servlet:
     context-path: /demo
   port: 8090
+
 
 

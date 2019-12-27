@@ -14,23 +14,23 @@ import javax.sql.DataSource;
 
 @Configuration
 // 单数据源注解中可以不写后面的两个参数
-@MapperScan(basePackages = "com.example.demo.modules.dao", sqlSessionTemplateRef = "masterSqlSessionTemplate", sqlSessionFactoryRef = "masterSqlSessionFactory")
+@MapperScan(basePackages = "com.example.demo.modules.dao", sqlSessionTemplateRef = "demoSqlSessionTemplate", sqlSessionFactoryRef = "demoSqlSessionFactory")
 public class DataSourceConfig {
 
-    @Bean("dataSource")
+    @Bean("demoDataSource")
     @ConfigurationProperties("spring.datasource")
     public DataSource dataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
-    @Bean("masterSqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+    @Bean("demoSqlSessionFactory")
+    public SqlSessionFactory sqlSessionFactory(DataSource demoDataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(dataSource);
+        sqlSessionFactoryBean.setDataSource(demoDataSource);
         return sqlSessionFactoryBean.getObject();
     }
 
-    @Bean("masterSqlSessionTemplate")
+    @Bean("demoSqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
@@ -38,7 +38,7 @@ public class DataSourceConfig {
     /**
      * 事务管理，用于@Transactional注解的参数
      */
-    @Bean("masterTransactionManager")
+    @Bean("demoTransactionManager")
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
