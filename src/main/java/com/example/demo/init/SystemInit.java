@@ -30,8 +30,6 @@ public class SystemInit {
 
     private Logger logger = LoggerFactory.getLogger(SystemInit.class);
 
-    private String lastVersion;
-
     /** 保存数据库连接信息 */
     private Map<String, Statement> statementMap = new HashMap<>();
     private Map<String, Connection> connectionMap = new HashMap<>();
@@ -40,6 +38,7 @@ public class SystemInit {
     private void init()  {
         String dataVersion;
         String databaseName = getDataBaseName(VERSION_TABLE_DATABASE);
+        String lastVersion;
         try {
             dataVersion = InitHelper.getDataVersion(databaseName);
             lastVersion = dataVersion;

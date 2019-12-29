@@ -16,8 +16,12 @@ public class SpringContextUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
-    //获取上下文
+    /**
+     * 获取上下文
+     * @return applicationContext
+     */
     public static ApplicationContext getApplicationContext() {
+        assertApplicationContext();
         return applicationContext;
     }
 
@@ -32,8 +36,10 @@ public class SpringContextUtil implements ApplicationContextAware {
      * @param name 名称
      * @return  实例化的bean
      */
-    public static Object getBean(String name){
-        return applicationContext.getBean(name);
+    @SuppressWarnings("unchecked")
+    public static <T> T  getBean(String name){
+        assertApplicationContext();
+        return (T) applicationContext.getBean(name);
     }
 
     /**
@@ -41,8 +47,15 @@ public class SpringContextUtil implements ApplicationContextAware {
      * @param requiredType 类型
      * @return  实例化的bean
      */
-    public static Object getBean(Class<?> requiredType){
+    public static  <T> T getBean(Class<T> requiredType){
+        assertApplicationContext();
         return applicationContext.getBean(requiredType);
+    }
+
+    private static void assertApplicationContext() {
+        if (applicationContext == null) {
+            throw new RuntimeException("applicationContext属性为null,请检查是否注入了SpringContextHolder!");
+        }
     }
 
 }
