@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements DeptService {
 
+    @Master
     @Override
     public List<Dept> list() {
         return super.list();
