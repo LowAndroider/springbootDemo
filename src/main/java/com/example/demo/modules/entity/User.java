@@ -2,6 +2,9 @@ package com.example.demo.modules.entity;
 
 import lombok.Data;
 
+/**
+ * @author Djh
+ */
 @Data
 public class User {
 

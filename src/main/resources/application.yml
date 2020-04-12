@@ -28,12 +28,6 @@ spring:
       # 通过connectProperties 属性来打开mergeSql功能；慢SQL记录
       connection-properties: druid.stat.mergeSql=ture;druid.stat.slowSqlMillis=5000
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    show-sql: true
-
   redis:
     database: 0
     host: 127.0.0.1
@@ -53,8 +47,6 @@ logging:
 mybatis-plus:
 # resultType中不写包名即默认为是这个包下的类
   type-aliases-package: com.example.demo.modules.entity
-  mapper-locations: classpath:com.example.demo.modules.dao.master.mapping/*.xml, classpath:com.example.demo.modules.dao.slave.mapping/*.xml
-
 
 server:
   servlet:
